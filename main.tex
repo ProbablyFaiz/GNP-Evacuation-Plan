@@ -1,0 +1,393 @@
+\documentclass[12pt]{article}
+
+%Page Formatting
+\usepackage[margin=1in]{geometry} 
+\usepackage{fancyhdr} 
+\setlength{\headheight}{14.5pt}
+\pagestyle{fancy}
+\usepackage{lastpage}
+
+%Math Formatting
+\usepackage{amsmath,amsthm,amssymb}
+\usepackage{siunitx} \sisetup{per-mode=fraction}
+\usepackage{blkarray}
+
+%Section Formatting
+\usepackage{etoolbox}
+\usepackage{sectsty}
+\sectionfont{\fontsize{16}{16}\selectfont}
+\subsectionfont{\fontsize{14}{15}\selectfont}
+\apptocmd{\thebibliography}{\raggedright}{}{}
+\usepackage[title]{appendix}
+
+%Paragraph Formatting
+\edef\restoreparindent{\parindent=\the\parindent\relax}
+\usepackage{parskip}
+\restoreparindent
+
+%TOC Formatting
+\usepackage{url}
+\usepackage[hidelinks,bookmarksopen=true]{hyperref}
+\usepackage{bookmark}
+
+%Table/Figure Formatting
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{caption} 
+\captionsetup[table]{skip=10pt}
+
+\begin{document}
+
+\lhead{Faiz Surani}
+\rhead{Page \thepage{} of \pageref{sec:bibliography}}
+
+\section*{Executive Summary}
+\addcontentsline{toc}{section}{Executive Summary}
+Glacier National Park (GNP) has long been considered one of the nation's finest natural preserves. It has become one of the most popular outdoor destinations in the United States, attracting over 3 million visitors annually \cite{glacierVisitorStats}. Unfortunately, the park has faced several natural disasters in recent years, including wildfires that have forced evacuations of parts or all of the park.
+
+Our challenge was to create an evacuation plan for GNP in the event of a fire. Because ranger teams needed to reach every backcountry campsite to facilitate the evacuation, we approached the problem as a variant of the Traveling Salesman Problem known as the Vehicle Routing Problem. We assumed that each ranger station was capable of dispatching two evacuation teams and used a metaheuristic algorithm from the open source Java library Jsprit to find the optimal route for each of the ranger teams.
+
+The routes created can be found in their entirety in Appendix \ref{sec:routesAppendix} and a visualization of the nine routes generated is shown in Figure \ref{fig:routeMap}. We optimized the routes to minimize the length of the longest route, resulting in a mean route length $\mu_d = \SI{115.52}{\kilo\meter}$ and a longest route of length $d_{max} = \SI{124.13}{\kilo\meter}$. Assuming rangers are able to travel \SI{32}{\kilo\meter} per day, we calculated that all rangers and visitors could be transported back to their assigned ranger stations within 4 days. From the ranger stations, all visitors and rangers could be picked up by buses and evacuated as far away as necessary to ensure their safety.
+
+Our model successfully created an optimal plan to evacuate all campsites in case of emergency. Our use of the VRP algorithm allows for rangers to allocate their resources most efficiently and predict how long the evacuation of a park region will take. Additionally, the distribution of evacuation teams around the park created highly localized evacuation routes, facilitating partial evacuations in the event the entire park does not have to be evacuated. However, our model does not make accommodations for blocked roads or trails due to the fire causing the evacuation. We felt that this weakness did not meaningfully detract from our model's efficacy, though, as the exact circumstances would vary and are thus impossible to predict at this time. In any case, the evacuation routes could be adjusted relatively easily by rangers on the ground with an understanding of the situation. The model also did not distinguish travelling speed based on varying elevation changes around the park as we were unable to find reliable data for elevation changes along trails, but \SI{5}{\kilo\meter\per\hour} nonetheless is a relatively accurate average speed.
+
+On the whole, we feel that our model was successful in its primary goal of designing evacuation routes to transport all visitors to ranger stations where they could then be taken by bus out of harm's way. The resulting plan can be mobilized either in part or in whole, creating great flexibility for rangers depending on the severity of the risks facing the park.
+
+\newpage
+\tableofcontents
+
+\section{Introduction}
+\subsection{Background}
+Established in 1910, Glacier National Park has long been considered a premier destination for hikers, campers, and tourists alike for its soaring views and breathtaking lakes. However, in recent years (especially as the effects of climate change have manifested \cite{climateChangeFires}), wildfires have increasingly encroached on the park and its visitors. These fires have at times forced large scale evacuations of the largely undeveloped expanse, creating complex logistical challenges for park rangers. 
+
+One of the problems rangers face is communicating the evacuation order to campers and backpackers spread out across Glacier's dozens of backcountry campsites and hiking trails, out of the reach of cell signal. Federal law prohibits the use of motor vehicles in much of the park, leaving rangers no choice but to dispatch rescue teams on foot. The challenge, then, is to develop an evacuation plan that enables rangers to evacuate the entirety of the park in the least time.
+
+\subsection{Restatement of Problem}
+The problem asks us to create an evacuation plan for Glacier National Park using mathematical modeling. More specifically, it asks the following questions:
+\begin{itemize}
+    \item How should campsites only accessible by foot be evacuated in the event of a fire?
+    \item How long will such an evacuation take to complete?
+    \item How should ranger teams be dispatched from each of the five ranger stations (Apgar, Two Medicine, Many Glacier, St. Mary, and Polebridge) to evacuate every campsite?
+\end{itemize}
+
+\subsection{Defining Variables}
+\begin{itemize}
+    \item \textbf{Input:} The number and locations of evacuation teams the NPS can dispatch.
+    \item \textbf{Input:} The locations of each backcountry campsite that has to be visited by a ranger team and evacuated.
+    \item \textbf{Input:} The roads and trails in the park that rangers can travel on and any path restrictions that prevent them from taking certain actions or routes.
+    \item \textbf{Output:} The routes that each ranger team should take to evacuate all campsites.
+    \item \textbf{Output:} The amount of time that each ranger's route will take and the length of time it will take to evacuate the entire park.
+    
+\end{itemize}
+
+\section{Development of the Model}
+\subsection{Assumptions}
+\label{subsec:assumptions}
+\begin{itemize}
+    \item Rangers and hikers are capable of walking at a constant speed of \SI{5}{\kilo\meter\per\hour} and can walk a total of \SI{32}{\kilo\meter} per day.
+    
+    \textbf{Justification:} Our research showed that the average person in generally good health can walk approximately \SI{20}{mi} in a day, or approximately \SI{32}{\kilo\meter} at a pace of \SI{5}{\kilo\meter\per\hour} \cite{walkingDistance}. Though the rough terrain of GNP would necessarily reduce a person's walking speed and range, National Park Service (NPS) rangers are usually in peak physical condition by virtue of their positions and could thus be expected to maintain this pace for the duration of an emergency evacuation.
+    
+    \item Visitors can be evacuated via bus once they have reached a ranger station by foot. 
+    
+    \textbf{Justification:} As we will later discuss, our model uses an approach based on evacuating campsite visitors to the nearest\footnote{This is not always the case due to the nature of the optimization we used, but is nonetheless true for the vast majority of cases.} ranger station. Four of the five ranger stations are connected to paved roads and close to existing bus stations, making this assumption logical. The fifth station, Polebridge, is only connected by an unpaved road but we assume here for simplicity's sake that a bus could travel along such a road in an emergency scenario.
+    
+    \item All of the campsites must be reached via foot starting from each ranger station.
+    
+    \textbf{Justification:} The problem statement specifies that it is generally prohibited by federal law (to say nothing of the laws of physics) to travel on many of the trails via motor vehicle. Some travel can presumably be expedited by motor vehicle travel in permitted areas but we did not distinguish paved roads and hiking trails when creating our model so we optimized the routes assuming 100\% travel by foot.
+    
+    \item Each ranger station is capable of dispatching two rescue/evacuation teams.
+    
+    \textbf{Justification:} When testing various implementations of our model, we found that the algorithm did not find it optimal to use more than nine teams in most cases. We found it reasonable that the NPS would be able to dispatch 10 total teams of their chosen size.
+\end{itemize}
+
+\subsection{Methodology}
+We chose to focus on creating evacuation routes for our solution. Thus, our principal challenge was to create a mathematical model that would generate the optimal routes NPS ranger teams could take to vacate every single campsite.
+
+We then decided to treat this problem as a variant of the infamous Traveling Salesman Problem (TSP). More specifically, we solved it as a Vehicle Routing Problem (VRP), a generalized version of the TSP that allows for more than one "salesman" (ranger teams, in this context).
+
+Because of the intense mathematical and computational complexity of algorithms suited to optimizing these problems, it was not possible for us to create one of our own, so we chose to use Jsprit, an open source Java library popular for VRP problems \cite{jspritGithub}. Jsprit's Route Optimization algorithm implements a metaheuristic approach described as follows:
+\begin{quote}
+    It is a large neighborhood search that combines elements of simulated annealing and threshold-accepting algorithms (Schrimpf et al. [2000, pg. 142]). Essentially, it works as follows: starting with an initial solution, it disintegrates parts of the solution leading to (i) a set of jobs that are not served by a vehicle anymore and to (ii) a partial solution containing all other jobs. Thus, this step is called ruin step. Based on the partial solution (ii) all jobs from (i) are re-integrated again, which is therefore referred to as recreation yielding to a new solution. If the new solution has a certain quality, it is accepted as new best solution, whereupon a new ruin-and-recreate iteration starts. \cite{metaheuristicExplanation}
+\end{quote}
+
+\subsection{The Distance Matrix}
+
+However, before we could proceed using this algorithm, we had to transform the information provided by the NPS into usable data. VRP optimization requires a distance matrix; that is, a matrix that gives the distance from every location to every other location, such that for some isosceles triangle $ABC$, with side lengths $2l$ and $l$, the distance matrix would be:
+
+\begin{equation}
+  d(A,B,C)=\begin{blockarray}{cccc}
+     & A & B & C \\
+    \begin{block}{c[ccc]}
+      A & 0 & 2l & 2l \\
+      B & 2l & 0 & l \\
+      C & 2l & l & 0  \\
+    \end{block}
+  \end{blockarray}
+\end{equation}
+
+The distance matrix allows for an optimization algorithm to determine the best path and order of locations some ranger team should visit. The NPS publishes the GPS coordinates of GNP's backcountry campsites \cite{campgroundCoordinates}, so we initially considered populating our distance matrix with Euclidean distance values such that for some two sets of coordinates $A$ and $B$,
+
+\begin{equation}
+    d(A,B) = \sqrt{(A_x-B_x)^2+(A_y-B_y)^2}
+\end{equation}
+
+\begin{figure}
+    \centering
+    \includegraphics{"Euclidean Inadequacy"}
+    \caption{An example of the stark difference between Euclidean distance and road distance. Euclidean distance is marked in blue and road distance is marked in red. Map courtesy of the National Park Service \cite{npsMap}.}
+    \label{fig:euclideanInadequacy}
+\end{figure}
+
+However, Euclidean distance would have been greatly flawed in this case because of the manner in which roads and trails are laid out in GNP. Figure \ref{fig:euclideanInadequacy} shows how the difference between Euclidean distance and actual distance can be immense, making Euclidean distance an inaccurate measure for our purposes that would result in a suboptimal model.
+
+In order to create a road distance\footnote{We checked beforehand to ensure that GraphHopper's mapping service did in fact include foot trails and configured the request to use walking distance to ensure the trails were used.} matrix instead, we queried GraphHopper's Matrix API \cite{matrixAPI} after converting our coordinate spreadsheet \cite{campgroundCoordinates} into a JSON query. This was successful, and we proceeded with our $64 \times 64$ distance matrix.
+
+\subsection{The Simulation}
+\begin{figure}
+    \centering
+    \includegraphics[height=9cm]{"Ranger Problem Visualization 2"}
+    \caption{A visualization of the problem before routes are generated. Green pins denote the locations of the ranger stations that teams can be dispatched from. Blue pins denote campsites that need to be evacuated.}
+    \label{fig:my_label}
+\end{figure}
+
+Now that we had our distance matrix, we were ready to run the VRP simulation. We configured our cost function with a \textit{minimax} decision rule so that the Jsprit algorithm would attempt to minimize the distance/time of the longest evacuation route. We chose to create our cost function this way rather than attempting to minimize distance traveled as a whole because a \textit{minimax} rule would emphasize completing the entirety of the evacuation in as little time as possible. This would therefore tend to lead to a more balanced distribution of distance travelled between all the ranger teams, having the added benefit of avoiding an undue burden on any one ranger team. After creating our cost function and making other small tweaks, we ran the optimization algorithm and obtained the results.
+\newpage
+\section{Results of the Model}
+
+Table \ref{table:routeSummary} gives summary information for and Figure \ref{fig:routeMap} provides a visualization of the nine rescue team routes we created with our VRP simulation. Each route takes the ranger through their assigned campsites and, after vacating all of these sites, back to their nearest ranger station. We assume that campers being evacuated are capable of traveling at the same speed as rangers given that they were able to backpack to their campsite and have much less total distance to cover relative to the rangers who have to travel to many campsites.
+
+Table \ref{table:manyGlacier1Table} shows one generated route of a team dispatched from Many Glacier Ranger Station as an example. As shown, each ranger team has a route that takes them through their designated (by the algorithm, that is) campsites and then back to their stations, presumably with all visitors they evacuated either with them or ahead of them en route to the station. 
+
+We define evacuation time as the time it takes for the last rangers and visitors to reach a station where they can be evacuated from the park by an awaiting bus. The longest ranger team route belongs to Polebridge Ranger Team 1, with a total travel distance of \SI{124.13}{\kilo\meter} and estimated walking time of 24:14:18. Of course, there are limits to how far a person can travel in a day, which we assume to be \SI{32}{\kilo\meter\per\day} (see Section \ref{subsec:assumptions}).
+
+We then find that Polebridge Team 1 would complete its evacuation route in 3.88 days walking at a pace of \SI{32}{\kilo\meter\per\day}, or approximately 4 full days. We thus conclude that it would take \textbf{4 days} to fully evacuate GNP's backcountry campsites.
+
+Finally, we calculate that the evacuation would take approximately \SI{208}{team-hours}\footnote{We have not attempted to define the size of a rescue team in this solution paper. We leave it to the NPS to decide the size of team necessary to assist visitors in vacating their campsites.} of walking in sum to evacuate the park. This estimate helps to inform the NPS of at least part of the costs associated with ordering a full evacuation of GNP.
+
+\begin{figure}
+    \centering
+    \includegraphics[height=11cm]{"Ranger mTSP Visualization 2"}
+    \caption{A visualization of the routes created by Jsprit's optimization algorithm. Each ranger team's route is marked in a different color for a total of nine routes that cover all 64 campsites.}
+    \label{fig:routeMap}
+\end{figure}
+
+\begin{table}
+\caption{Total travel distance and time for each generated route. There is a mean travel distance of $\mu_d = \SI{115.52}{\kilo\meter}$ with standard deviation $\sigma_d = \SI{7.76}{\kilo\meter}$.}
+\begin{tabular}{@{}lll@{}}
+\toprule
+Ranger Team    & Total Distance (km) & Walking Time (h:m:s) \\ \midrule
+Two Medicine 1 & 98.88               & 19:46:33             \\
+Two Medicine 2 & 122.3               & 24:27:33             \\
+Many Glacier 1 & 112.15              & 22:25:44             \\
+Many Glacier 2 & 109                 & 21:48:00             \\
+Polebridge 1   & 124.13              & 24:49:33             \\
+Polebridge 2   & 123.44              & 24:41:18             \\
+Apgar 1        & 112.76              & 22:33:07             \\
+Apgar 2        & 117.44              & 23:29:18             \\
+St. Mary 1     & 119.6               & 23:55:12             \\ \bottomrule
+\end{tabular}
+\label{table:routeSummary}
+\end{table}
+
+\begin{table}
+\caption{One of nine total ranger team evacuation routes created, reproduced here for demonstration purposes. All nine evacuation routes can be found in their entirety in Appendix \ref{sec:routesAppendix}.}
+\begin{tabular}{@{}llll@{}}
+\toprule
+Many Glacier Station - Ranger Team 1 &          &           &               \\ \midrule
+stop                    & arrival  & departure & distance (km) \\
+Many Glacier Ranger Station & -        & 0:00:00   & 0             \\
+SLIDE LAKE              & 6:17:14  & 6:17:14   & 31.44         \\
+GABLE CREEK             & 8:15:08  & 8:15:08   & 41.26         \\
+HEAD ELIZABETH LAKE     & 9:53:16  & 9:53:16   & 49.44         \\
+HELEN LAKE              & 10:43:33 & 10:43:33  & 53.63         \\
+FOOT ELIZABETH LAKE     & 12:03:47 & 12:03:47  & 60.32         \\
+POIA LAKE               & 15:22:09 & 15:22:09  & 76.85         \\
+CRACKER LAKE         & 19:58:38 & 19:58:38  & 99.89         \\
+Many Glacier Ranger Station & 22:25:44 & -         & 112.15        \\ \bottomrule
+\end{tabular}
+\label{table:manyGlacier1Table}
+\end{table}
+
+\newpage
+\subsection{Model Assessment and Analysis}
+\subsubsection{Strengths}
+\begin{itemize}
+
+    \item The plan makes efficient use of manpower and time.
+    
+    \textbf{Explanation:} Because we optimized our routes to finish as quickly as possible with a constrained number of teams, the resulting plan finds the optimal routes to finish the evacuation as quickly as possible with limited resources at NPS's disposal.
+
+    \item The localization of each route allows only part of the park to be evacuated without creating a separate plan.
+    
+    \textbf{Explanation:} Because each route tends to evacuate only one small region of GNP, it is possible to only dispatch some of the ranger teams in the event the entire park does not need to be evacuated. This provides great flexibility to park rangers and avoids unnecessary logistical and financial challenges that a full evacuation would entail.
+    
+    \item The plan is easily adjustable.
+    
+    \textbf{Explanation:} Due to the nature of our model's construction, it is relatively easy for us to simply add more constraints if necessary, such as a blocked road or extra campsite. Running the optimization algorithm again will then result in an updated evacuation plan that has the necessary changes for those constraints.
+    
+\end{itemize}
+
+\subsubsection{Weaknesses}
+\begin{itemize}
+    \item The model does not consider elevation change on individual trail segments and assumes a constant walking speed of \SI{5}{\kilo\meter\per\hour} on all trails. 
+    
+    \textbf{Explanation:} Though elevation would of course play a factor in a mountainous region like GNP, exact data could not be found in terms of elevation along each trail and it would have been difficult to predict the magnitude of speed changes due to elevation gain/loss. The \SI{5}{\kilo\meter\per\hour} speed is accurate on a broad scale so we chose to use it as a rule of thumb.
+    
+    \item The model does not consider potential closures and blockages of trails due to the fire forcing the evacuation or some other factor.
+    
+    \textbf{Explanation:} This could conceivably undermine the model's effectiveness if the fire forcing the evacuation is within the park's boundaries and blocks access to campsites. However, as the exact circumstances of such an emergency are impossible to predict, we did not account for them in our model. In any case, it would perhaps be best for rangers with exact knowledge of the situation to adjust the evacuation plan as they see fit in the event of such challenges arising.
+\end{itemize}
+
+\begin{thebibliography}{}
+\addcontentsline{toc}{section}{References}
+    \bibitem{glacierVisitorStats} Lamon, Madeleine. “Glacier Park Breaks May Visitation Record.” Flathead Beacon, 9 June 2018, \url{flatheadbeacon.com/2018/06/08/glacier-park-breaks-may-visitation-record/}.
+    
+    \bibitem{climateChangeFires} “Is Global Warming Fueling Increased Wildfire Risks?” Union of Concerned Scientists, \url{www.ucsusa.org/global-warming/science-and-impacts/impacts/global-warming-and-wildfire.html}.
+    
+    \bibitem{walkingDistance} Bumgardner, Wendy. “How Far Could You Walk in 8 Hours?” Verywell Fit, Verywellfit, \url{www.verywellfit.com/how-far-can-a-healthy-person-walk-3975556}.
+    
+    \bibitem{metaheuristicExplanation} “Jsprit - Metaheuristic.” GitHub, GraphHopper, \url{github.com/graphhopper/jsprit/blob/master/docs/Meta-Heuristic.md}.
+    
+    \bibitem{npsMap} “Backcountry Map.” Glacier National Park, National Park Service, \url{www.nps.gov/glac/planyourvisit/upload/Backcountry-Map-Web.pdf}.
+    
+    \bibitem{campgroundCoordinates} “Backcountry Campground GPS Points.” Glacier National Park, National Park Service, \url{www.nps.gov/glac/planyourvisit/upload/backcountrycampgroundsGPS.pdf}.
+    
+    \bibitem{matrixAPI} “Matrix API - GraphHopper Directions API Documentation.” GraphHopper, \url{graphhopper.com/api/1/docs/matrix/}.
+    
+    \bibitem{jspritGithub} “Jsprit.” GitHub, GraphHopper, 22 Jan. 2019, \url{github.com/graphhopper/jsprit}.
+\label{sec:bibliography}
+\end{thebibliography}
+
+\newpage
+\rhead{Appendix \ref{sec:routesAppendix}}
+\begin{appendices}
+\section{Evacuation Team Routes}
+\label{sec:routesAppendix}
+\begin{table}[ht!]
+\begin{tabular}{@{}llll@{}}
+\toprule
+vehicle id: twomedicine\_ranger  &          &           &             \\ \midrule
+stop                             & arrival  & departure & distance/km \\
+twomedicine                      & -        & 0:00:00   & 0           \\
+OLE LAKE                         & 7:35:49  & 7:35:49   & 37.99       \\
+OLE CREEK                        & 10:23:03 & 10:23:03  & 51.92       \\
+PARK CREEK                       & 12:04:06 & 12:04:06  & 60.34       \\
+LAKE ISABEL                      & 15:10:29 & 15:10:29  & 75.87       \\
+UPPER PARK CREEK                 & 15:55:15 & 15:55:15  & 79.6        \\
+COBALT LAKE                      & 17:54:08 & 17:54:08  & 89.51       \\
+twomedicine                      & 19:46:33 & -         & 98.88       \\ \bottomrule
+                                 &          &           &             \\ \toprule
+vehicle id: twomedicine\_ranger2 &          &           &             \\ \midrule
+stop                             & arrival  & departure & distance/km \\
+twomedicine                      & -        & 0:00:00   & 0           \\
+TWO MEDECINE                     & 0:10:16  & 0:10:16   & 0.86        \\
+OLDMAN LAKE                      & 2:14:43  & 2:14:43   & 11.23       \\
+UPPER NYACK CREEK                & 5:24:45  & 5:24:45   & 27.06       \\
+LOWER NYACK CREEK                & 7:57:01  & 7:57:01   & 39.75       \\
+COAL CREEK                       & 13:17:53 & 13:17:53  & 66.49       \\
+BEAVER WOMAN LAKE                & 16:27:03 & 16:27:03  & 82.25       \\
+NO NAME LAKE                     & 22:00:40 & 22:00:40  & 110.06      \\
+UPPER TWO MED LAKE               & 23:04:41 & 23:04:41  & 115.39      \\
+twomedicine                      & 24:27:33  & -         & 122.3       \\ \bottomrule
+                                 &          &           &             \\ \toprule
+vehicle id: manyglacier\_ranger  &          &           &             \\ \midrule
+stop                             & arrival  & departure & distance/km \\
+manyglacier                      & -        & 0:00:00   & 0           \\
+SLIDE LAKE                       & 6:17:14  & 6:17:14   & 31.44       \\
+GABLE CREEK                      & 8:15:08  & 8:15:08   & 41.26       \\
+HEAD ELIZABETH LAKE              & 9:53:16  & 9:53:16   & 49.44       \\
+HELEN LAKE                       & 10:43:33 & 10:43:33  & 53.63       \\
+FOOT ELIZABETH LAKE              & 12:03:47 & 12:03:47  & 60.32       \\
+POIA LAKE                        & 15:22:09 & 15:22:09  & 76.85       \\
+CREEKACKER LAKE                  & 19:58:38 & 19:58:38  & 99.89       \\
+manyglacier                      & 22:25:44 & -         & 112.15      \\ \bottomrule
+                                 &          &           &             \\
+\end{tabular}
+\end{table}
+
+\begin{table}[ht!]
+\begin{tabular}{@{}llll@{}}
+\toprule
+vehicle id: manyglacier\_ranger2 &          &           &             \\ \midrule
+stop                             & arrival  & departure & distance/km \\
+manyglacier                      & -        & 0:00:00   & 0           \\
+COSLEY LAKE                      & 4:37:50  & 4:37:50   & 23.15       \\
+FOOT GLENNS LAKE                 & 5:08:52  & 5:08:52   & 25.74       \\
+HEAD GLENNS LAKE                 & 5:55:52  & 5:55:52   & 29.66       \\
+MOKOWANIS LAKE                   & 6:19:03  & 6:19:03   & 31.59       \\
+MOKOWANIS JCT                    & 6:39:07  & 6:39:07   & 33.26       \\
+STONEY INDIAN LAKE               & 8:18:55  & 8:18:55   & 41.58       \\
+KOOTENAI LAKE                    & 9:51:14  & 9:51:14   & 49.27       \\
+WATERTON RIVER                   & 10:51:21 & 10:51:21  & 54.28       \\
+GOAT HAUNT SHELTERS              & 11:02:36 & 11:02:36  & 55.22       \\
+FIFTY MOUNTAIN                   & 14:24:29 & 14:24:29  & 72.04       \\
+FLATTOP                          & 16:26:07 & 16:26:07  & 82.18       \\
+GRANITE PARK                     & 19:07:59 & 19:07:59  & 95.67       \\
+manyglacier                      & 21:48:00 & -         & 109         \\ \bottomrule
+                                 &          &           &             \\ \toprule
+vehicle id: polebridge\_ranger   &          &           &             \\ \midrule
+stop                             & arrival  & departure & distance/km \\
+polebridge                       & -        & 0:00:00   & 0           \\
+ROUND PRAIRIE                    & 3:14:26  & 3:14:26   & 16.2        \\
+GRACE LAKE                       & 12:53:59 & 12:53:59  & 64.5        \\
+ADAIR                            & 13:47:03 & 13:47:03  & 68.92       \\
+FOOT LOGGING LAKE                & 15:13:36 & 15:13:36  & 76.13       \\
+LOWER QUARTZ LAKE                & 19:54:16 & 19:54:16  & 99.52       \\
+QUARTZ LAKE                      & 20:53:50 & 20:53:50  & 104.49      \\
+polebridge                       & 24:49:33  & -         & 124.13      \\ \bottomrule
+                                 &          &           &             \\ \toprule
+vehicle id: polebridge\_ranger2  &          &           &             \\ \midrule
+stop                             & arrival  & departure & distance/km \\
+polebridge                       & -        & 0:00:00   & 0           \\
+AKOKALA LAKE                     & 3:45:11  & 3:45:11   & 18.77       \\
+HEAD BOWMAN LAKE                 & 7:43:35  & 7:43:35   & 38.63       \\
+BROWN PASS                       & 9:49:43  & 9:49:43   & 49.14       \\
+LAKE JANET                       & 11:23:36 & 11:23:36  & 56.97       \\
+LAKE FRANCES                     & 12:09:42 & 12:09:42  & 60.81       \\
+HAWKSBILL                        & 12:17:31 & 12:17:31  & 61.46       \\
+HOLE IN WALL                     & 13:36:57 & 13:36:57  & 68.08       \\
+BOULDER PASS                     & 14:51:05 & 14:51:05  & 74.26       \\
+UPPER KINTLA LAKE                & 16:24:39 & 16:24:39  & 82.05       \\
+HEAD KINTLA LAKE                 & 18:03:40 & 18:03:40  & 90.31       \\
+polebridge                       & 24:41:18  & -         & 123.44      \\ \bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[ht!]
+\begin{tabular}{@{}llll@{}}
+\toprule
+vehicle id: apgar\_ranger        &          &           &             \\ \midrule
+stop                             & arrival  & departure & distance/km \\
+apgar                            & -        & 0:00:00   & 0           \\
+SNYDER LAKE                      & 4:46:54  & 4:46:54   & 23.91       \\
+HARRISON LAKE                    & 11:56:54 & 11:56:54  & 59.74       \\
+LINCOLN LAKE                     & 17:29:09 & 17:29:09  & 87.43       \\
+apgar                            & 22:33:07 & -         & 112.76      \\ \bottomrule
+                                 &          &           &             \\ \toprule
+vehicle id: apgar\_ranger2       &          &           &             \\ \midrule
+stop                             & arrival  & departure & distance/km \\
+apgar                            & -        & 0:00:00   & 0           \\
+SPERRY                           & 5:23:24  & 5:23:24   & 26.95       \\
+GUNSIGHT LAKE                    & 7:36:40  & 7:36:40   & 38.06       \\
+LAKE ELLEN WILSON                & 9:10:51  & 9:10:51   & 45.91       \\
+CAMAS LAKE                       & 16:29:16 & 16:29:16  & 82.44       \\
+ARROW LAKE                       & 17:32:38 & 17:32:38  & 87.72       \\
+LAKE MCDONALD                    & 21:05:48 & 21:05:48  & 105.49      \\
+apgar                            & 23:29:18 & -         & 117.44      \\ \bottomrule
+                                 &          &           &             \\ \toprule
+vehicle id: stmary\_ranger       &          &           &             \\ \midrule
+stop                             & arrival  & departure & distance/km \\
+stmary                           & -        & 0:00:00   & 0           \\
+OTOKOMI LAKE                     & 3:36:37  & 3:36:37   & 18.05       \\
+REYNOLDS CREEKEEK                & 7:27:07  & 7:27:07   & 37.26       \\
+FOOT RED EAGLE LAKE              & 11:55:05 & 11:55:05  & 59.59       \\
+HEAD RED EAGLE LAKE              & 12:12:40 & 12:12:40  & 61.06       \\
+ATLANTIC CREEK                   & 15:33:04 & 15:33:04  & 77.76       \\
+MORNING STAR LAKE                & 16:32:22 & 16:32:22  & 82.7        \\
+stmary                           & 23:55:12 & -         & 119.6       \\ \bottomrule
+\end{tabular}
+\end{table}
+\end{appendices}
+
+\end{document}

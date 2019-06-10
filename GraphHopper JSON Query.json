@@ -1,0 +1,693 @@
+{
+   "vehicles":[
+      {
+         "vehicle_id":"polebridge_ranger",
+         "type_id":"walking",
+         "start_address":{
+            "location_id":"polebridge",
+            "lon":-114.280627,
+            "lat":48.783552
+         }
+      },
+      {
+         "vehicle_id":"polebridge_ranger2",
+         "type_id":"walking",
+         "start_address":{
+            "location_id":"polebridge",
+            "lon":-114.280627,
+            "lat":48.783552
+         }
+      },
+      {
+         "vehicle_id":"apgar_ranger",
+         "type_id":"walking",
+         "start_address":{
+            "location_id":"apgar",
+            "lon":-113.984478,
+            "lat":48.526989
+         }
+      },
+      {
+         "vehicle_id":"apgar_ranger2",
+         "type_id":"walking",
+         "start_address":{
+            "location_id":"apgar",
+            "lon":-113.984478,
+            "lat":48.526989
+         }
+      },
+      {
+         "vehicle_id":"twomedicine_ranger",
+         "type_id":"walking",
+         "start_address":{
+            "location_id":"twomedicine",
+            "lon":-113.367033,
+            "lat":48.486266
+         }
+      },
+      {
+         "vehicle_id":"twomedicine_ranger2",
+         "type_id":"walking",
+         "start_address":{
+            "location_id":"twomedicine",
+            "lon":-113.367033,
+            "lat":48.486266
+         }
+      },
+      {
+         "vehicle_id":"stmary_ranger",
+         "type_id":"walking",
+         "start_address":{
+            "location_id":"stmary",
+            "lon":-113.438991,
+            "lat":48.747475
+         }
+      },
+      {
+         "vehicle_id":"stmary_ranger2",
+         "type_id":"walking",
+         "start_address":{
+            "location_id":"stmary",
+            "lon":-113.438991,
+            "lat":48.747475
+         }
+      },
+      {
+         "vehicle_id":"manyglacier_ranger",
+         "type_id":"walking",
+         "start_address":{
+            "location_id":"manyglacier",
+            "lon":-113.675871,
+            "lat":48.798097
+         }
+      },
+      {
+         "vehicle_id":"manyglacier_ranger2",
+         "type_id":"walking",
+         "start_address":{
+            "location_id":"manyglacier",
+            "lon":-113.675871,
+            "lat":48.798097
+         }
+      }
+   ],
+   "vehicle_types":[
+      {
+         "type_id":"walking",
+         "profile":"foot"
+      }
+   ],
+   "objectives":[
+      {
+         "type":"min-max",
+         "value":"completion_time"
+      }
+   ],
+   "services":[
+      {
+         "id":"ADAIR",
+         "name":"trip_ADAIR",
+         "address":{
+            "location_id":"ADAIR",
+            "lon":-114.05160,
+            "lat":48.76755
+         }
+      },
+	  {
+         "id":"LAKE MCDONALD",
+         "name":"trip_LAKE MCDONALD",
+         "address":{
+            "location_id":"LAKE MCDONALD",
+            "lon":-113.925761,
+            "lat":48.594121
+         }
+      },
+      {
+         "id":"AKOKALA LAKE",
+         "name":"trip_AKOKALA LAKE",
+         "address":{
+            "location_id":"AKOKALA LAKE",
+            "lon":-114.20055,
+            "lat":48.87511
+         }
+      },
+      {
+         "id":"ARROW LAKE",
+         "name":"trip_ARROW LAKE",
+         "address":{
+            "location_id":"ARROW LAKE",
+            "lon":-113.88645,
+            "lat":48.70309
+         }
+      },
+      {
+         "id":"ATLANTIC CREEK",
+         "name":"trip_ATLANTIC CREEK",
+         "address":{
+            "location_id":"ATLANTIC CREEK",
+            "lon":-113.45363,
+            "lat":48.57545
+         }
+      },
+      {
+         "id":"BEAVER WOMAN LAKE",
+         "name":"trip_BEAVER WOMAN LAKE",
+         "address":{
+            "location_id":"BEAVER WOMAN LAKE",
+            "lon":-113.57497,
+            "lat":48.48336
+         }
+      },
+      {
+         "id":"BOULDER PASS",
+         "name":"trip_BOULDER PASS",
+         "address":{
+            "location_id":"BOULDER PASS",
+            "lon":-114.10499,
+            "lat":48.96443
+         }
+      },
+      {
+         "id":"BROWN PASS",
+         "name":"trip_BROWN PASS",
+         "address":{
+            "location_id":"BROWN PASS",
+            "lon":-114.03802,
+            "lat":48.95165
+         }
+      },
+      {
+         "id":"CAMAS LAKE",
+         "name":"trip_CAMAS LAKE",
+         "address":{
+            "location_id":"CAMAS LAKE",
+            "lon":-113.88309,
+            "lat":48.73826
+         }
+      },
+      {
+         "id":"COAL CREEK",
+         "name":"trip_COAL CREEK",
+         "address":{
+            "location_id":"COAL CREEK",
+            "lon":-113.61282,
+            "lat":48.41253
+         }
+      },
+      {
+         "id":"COBALT LAKE",
+         "name":"trip_COBALT LAKE",
+         "address":{
+            "location_id":"COBALT LAKE",
+            "lon":-113.42498,
+            "lat":48.43561
+         }
+      },
+      {
+         "id":"COSLEY LAKE",
+         "name":"trip_COSLEY LAKE",
+         "address":{
+            "location_id":"COSLEY LAKE",
+            "lon":-113.75686,
+            "lat":48.92525
+         }
+      },
+      {
+         "id":"CREEKACKER LAKE",
+         "name":"trip_CREEKACKER LAKE",
+         "address":{
+            "location_id":"CREEKACKER LAKE",
+            "lon":-113.64297,
+            "lat":48.74218
+         }
+      },
+      {
+         "id":"FIFTY MOUNTAIN",
+         "name":"trip_FIFTY MOUNTAIN",
+         "address":{
+            "location_id":"FIFTY MOUNTAIN",
+            "lon":-113.86149,
+            "lat":48.85250
+         }
+      },
+      {
+         "id":"FLATTOP",
+         "name":"trip_FLATTOP",
+         "address":{
+            "location_id":"FLATTOP",
+            "lon":-113.83970,
+            "lat":48.78394
+         }
+      },
+      {
+         "id":"FOOT ELIZABETH LAKE",
+         "name":"trip_FOOT ELIZABETH LAKE",
+         "address":{
+            "location_id":"FOOT ELIZABETH LAKE",
+            "lon":-113.72533,
+            "lat":48.89184
+         }
+      },
+      {
+         "id":"FOOT GLENNS LAKE",
+         "name":"trip_FOOT GLENNS LAKE",
+         "address":{
+            "location_id":"FOOT GLENNS LAKE",
+            "lon":-113.77882,
+            "lat":48.91468
+         }
+      },
+      {
+         "id":"FOOT LOGGING LAKE",
+         "name":"trip_FOOT LOGGING LAKE",
+         "address":{
+            "location_id":"FOOT LOGGING LAKE",
+            "lon":-114.12847,
+            "lat":48.74221
+         }
+      },
+      {
+         "id":"FOOT RED EAGLE LAKE",
+         "name":"trip_FOOT RED EAGLE LAKE",
+         "address":{
+            "location_id":"FOOT RED EAGLE LAKE",
+            "lon":-113.50192,
+            "lat":48.65602
+         }
+      },
+      {
+         "id":"GABLE CREEKEEK",
+         "name":"trip_GABLE CREEKEEK",
+         "address":{
+            "location_id":"GABLE CREEKEEK",
+            "lon":-113.71306,
+            "lat":48.93475
+         }
+      },
+      {
+         "id":"GOAT HAUNT SHELTERS",
+         "name":"trip_GOAT HAUNT SHELTERS",
+         "address":{
+            "location_id":"GOAT HAUNT SHELTERS",
+            "lon":-113.88818,
+            "lat":48.95936
+         }
+      },
+      {
+         "id":"GRACE LAKE",
+         "name":"trip_GRACE LAKE",
+         "address":{
+            "location_id":"GRACE LAKE",
+            "lon":-114.00279,
+            "lat":48.78721
+         }
+      },
+      {
+         "id":"GRANITE PARK",
+         "name":"trip_GRANITE PARK",
+         "address":{
+            "location_id":"GRANITE PARK",
+            "lon":-113.77787,
+            "lat":48.77166
+         }
+      },
+      {
+         "id":"GUNSIGHT LAKE",
+         "name":"trip_GUNSIGHT LAKE",
+         "address":{
+            "location_id":"GUNSIGHT LAKE",
+            "lon":-113.70864,
+            "lat":48.62711
+         }
+      },
+      {
+         "id":"HARRISON LAKE",
+         "name":"trip_HARRISON LAKE",
+         "address":{
+            "location_id":"HARRISON LAKE",
+            "lon":-113.76521,
+            "lat":48.52368
+         }
+      },
+      {
+         "id":"HAWKSBILL",
+         "name":"trip_HAWKSBILL",
+         "address":{
+            "location_id":"HAWKSBILL",
+            "lon":-114.01046,
+            "lat":48.94566
+         }
+      },
+      {
+         "id":"HEAD BOWMAN LAKE",
+         "name":"trip_HEAD BOWMAN LAKE",
+         "address":{
+            "location_id":"HEAD BOWMAN LAKE",
+            "lon":-114.12067,
+            "lat":48.90432
+         }
+      },
+      {
+         "id":"HEAD ELIZABETH LAKE",
+         "name":"trip_HEAD ELIZABETH LAKE",
+         "address":{
+            "location_id":"HEAD ELIZABETH LAKE",
+            "lon":-113.72714,
+            "lat":48.87233
+         }
+      },
+      {
+         "id":"HEAD GLENNS LAKE",
+         "name":"trip_HEAD GLENNS LAKE",
+         "address":{
+            "location_id":"HEAD GLENNS LAKE",
+            "lon":-113.80813,
+            "lat":48.89100
+         }
+      },
+      {
+         "id":"HEAD KINTLA LAKE",
+         "name":"trip_HEAD KINTLA LAKE",
+         "address":{
+            "location_id":"HEAD KINTLA LAKE",
+            "lon":-114.25310,
+            "lat":48.97598
+         }
+      },
+      {
+         "id":"HEAD RED EAGLE LAKE",
+         "name":"trip_HEAD RED EAGLE LAKE",
+         "address":{
+            "location_id":"HEAD RED EAGLE LAKE",
+            "lon":-113.51020,
+            "lat":48.64591
+         }
+      },
+      {
+         "id":"HELEN LAKE",
+         "name":"trip_HELEN LAKE",
+         "address":{
+            "location_id":"HELEN LAKE",
+            "lon":-113.74501,
+            "lat":48.84020
+         }
+      },
+      {
+         "id":"HOLE IN WALL",
+         "name":"trip_HOLE IN WALL",
+         "address":{
+            "location_id":"HOLE IN WALL",
+            "lon":-114.06726,
+            "lat":48.96593
+         }
+      },
+      {
+         "id":"KOOTENAI LAKE",
+         "name":"trip_KOOTENAI LAKE",
+         "address":{
+            "location_id":"KOOTENAI LAKE",
+            "lon":-113.90203,
+            "lat":48.92631
+         }
+      },
+      {
+         "id":"LAKE ELLEN WILSON",
+         "name":"trip_LAKE ELLEN WILSON",
+         "address":{
+            "location_id":"LAKE ELLEN WILSON",
+            "lon":-113.75369,
+            "lat":48.60516
+         }
+      },
+      {
+         "id":"LAKE FRANCES",
+         "name":"trip_LAKE FRANCES",
+         "address":{
+            "location_id":"LAKE FRANCES",
+            "lon":-114.00451,
+            "lat":48.94070
+         }
+      },
+      {
+         "id":"LAKE ISABEL",
+         "name":"trip_LAKE ISABEL",
+         "address":{
+            "location_id":"LAKE ISABEL",
+            "lon":-113.49200,
+            "lat":48.42462
+         }
+      },
+      {
+         "id":"LAKE JANET",
+         "name":"trip_LAKE JANET",
+         "address":{
+            "location_id":"LAKE JANET",
+            "lon":-113.95336,
+            "lat":48.94252
+         }
+      },
+      {
+         "id":"LINCOLN LAKE",
+         "name":"trip_LINCOLN LAKE",
+         "address":{
+            "location_id":"LINCOLN LAKE",
+            "lon":-113.77480,
+            "lat":48.58926
+         }
+      },
+      {
+         "id":"LOWER NYACK CREEK",
+         "name":"trip_LOWER NYACK CREEK",
+         "address":{
+            "location_id":"LOWER NYACK CREEK",
+            "lon":-113.70271,
+            "lat":48.48868
+         }
+      },
+      {
+         "id":"LOWER QUARTZ LAKE",
+         "name":"trip_LOWER QUARTZ LAKE",
+         "address":{
+            "location_id":"LOWER QUARTZ LAKE",
+            "lon":-114.17297,
+            "lat":48.79814
+         }
+      },
+      {
+         "id":"MANY GLACIER",
+         "name":"trip_MANY GLACIER",
+         "address":{
+            "location_id":"MANY GLACIER",
+            "lon":-113.67589,
+            "lat":48.79595
+         }
+      },
+      {
+         "id":"MOKOWANIS JCT",
+         "name":"trip_MOKOWANIS JCT",
+         "address":{
+            "location_id":"MOKOWANIS JCT",
+            "lon":-113.81840,
+            "lat":48.88937
+         }
+      },
+      {
+         "id":"MOKOWANIS LAKE",
+         "name":"trip_MOKOWANIS LAKE",
+         "address":{
+            "location_id":"MOKOWANIS LAKE",
+            "lon":-113.81245,
+            "lat":48.87790
+         }
+      },
+      {
+         "id":"MORNING STAR LAKE",
+         "name":"trip_MORNING STAR LAKE",
+         "address":{
+            "location_id":"MORNING STAR LAKE",
+            "lon":-113.45642,
+            "lat":48.54097
+         }
+      },
+      {
+         "id":"NO NAME LAKE",
+         "name":"trip_NO NAME LAKE",
+         "address":{
+            "location_id":"NO NAME LAKE",
+            "lon":-113.44920,
+            "lat":48.47986
+         }
+      },
+      {
+         "id":"OLDMAN LAKE",
+         "name":"trip_OLDMAN LAKE",
+         "address":{
+            "location_id":"OLDMAN LAKE",
+            "lon":-113.45552,
+            "lat":48.51282
+         }
+      },
+      {
+         "id":"OLE CREEK",
+         "name":"trip_OLE CREEK",
+         "address":{
+            "location_id":"OLE CREEK",
+            "lon":-113.48324,
+            "lat":48.30635
+         }
+      },
+      {
+         "id":"OLE LAKE",
+         "name":"trip_OLE LAKE",
+         "address":{
+            "location_id":"OLE LAKE",
+            "lon":-113.38441,
+            "lat":48.38222
+         }
+      },
+      {
+         "id":"OTOKOMI LAKE",
+         "name":"trip_OTOKOMI LAKE",
+         "address":{
+            "location_id":"OTOKOMI LAKE",
+            "lon":-113.59485,
+            "lat":48.71812
+         }
+      },
+      {
+         "id":"PARK CREEK",
+         "name":"trip_PARK CREEK",
+         "address":{
+            "location_id":"PARK CREEK",
+            "lon":-113.54711,
+            "lat":48.33398
+         }
+      },
+      {
+         "id":"POIA LAKE",
+         "name":"trip_POIA LAKE",
+         "address":{
+            "location_id":"POIA LAKE",
+            "lon":-113.60641,
+            "lat":48.85001
+         }
+      },
+      {
+         "id":"QUARTZ LAKE",
+         "name":"trip_QUARTZ LAKE",
+         "address":{
+            "location_id":"QUARTZ LAKE",
+            "lon":-114.13665,
+            "lat":48.82372
+         }
+      },
+      {
+         "id":"REYNOLDS CREEKEEK",
+         "name":"trip_REYNOLDS CREEKEEK",
+         "address":{
+            "location_id":"REYNOLDS CREEKEEK",
+            "lon":-113.63521,
+            "lat":48.66685
+         }
+      },
+      {
+         "id":"ROUND PRAIRIE",
+         "name":"trip_ROUND PRAIRIE",
+         "address":{
+            "location_id":"ROUND PRAIRIE",
+            "lon":-114.36639,
+            "lat":48.85773
+         }
+      },
+      {
+         "id":"SLIDE LAKE",
+         "name":"trip_SLIDE LAKE",
+         "address":{
+            "location_id":"SLIDE LAKE",
+            "lon":-113.61847,
+            "lat":48.90522
+         }
+      },
+      {
+         "id":"SNYDER LAKE",
+         "name":"trip_SNYDER LAKE",
+         "address":{
+            "location_id":"SNYDER LAKE",
+            "lon":-113.80524,
+            "lat":48.62591
+         }
+      },
+      {
+         "id":"SPERRY",
+         "name":"trip_SPERRY",
+         "address":{
+            "location_id":"SPERRY",
+            "lon":-113.78605,
+            "lat":48.60361
+         }
+      },
+      {
+         "id":"STONEY INDIAN LAKE",
+         "name":"trip_STONEY INDIAN LAKE",
+         "address":{
+            "location_id":"STONEY INDIAN LAKE",
+            "lon":-113.86899,
+            "lat":48.88739
+         }
+      },
+      {
+         "id":"TWO MEDECINE",
+         "name":"trip_TWO MEDECINE",
+         "address":{
+            "location_id":"TWO MEDECINE",
+            "lon":-113.36406,
+            "lat":48.49211
+         }
+      },
+      {
+         "id":"UPPER KINTLA LAKE",
+         "name":"trip_UPPER KINTLA LAKE",
+         "address":{
+            "location_id":"UPPER KINTLA LAKE",
+            "lon":-114.15483,
+            "lat":48.98048
+         }
+      },
+      {
+         "id":"UPPER NYACK CREEK",
+         "name":"trip_UPPER NYACK CREEK",
+         "address":{
+            "location_id":"UPPER NYACK CREEK",
+            "lon":-113.58584,
+            "lat":48.54960
+         }
+      },
+      {
+         "id":"UPPER PARK CREEK",
+         "name":"trip_UPPER PARK CREEK",
+         "address":{
+            "location_id":"UPPER PARK CREEK",
+            "lon":-113.45996,
+            "lat":48.41511
+         }
+      },
+      {
+         "id":"UPPER TWO MED LAKE",
+         "name":"trip_UPPER TWO MED LAKE",
+         "address":{
+            "location_id":"UPPER TWO MED LAKE",
+            "lon":-113.44660,
+            "lat":48.46787
+         }
+      },
+      {
+         "id":"WATERTON RIVER",
+         "name":"trip_WATERTON RIVER",
+         "address":{
+            "location_id":"WATERTON RIVER",
+            "lon":-113.89802,
+            "lat":48.95575
+         }
+      }
+   ]
+}
